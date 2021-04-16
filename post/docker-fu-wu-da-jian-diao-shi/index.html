@@ -1,0 +1,445 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Docker 服务搭建调试 | Gridea</title>
+
+<link rel="shortcut icon" href="https://github.com/linzing/favicon.ico?v=1618566996136">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://github.com/linzing/styles/main.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"> -->
+
+<style>
+    hr {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script> -->
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <style>
+    /* 导航栏样式 */
+    .navbar {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-align: center;
+        align-items: center;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+    }
+
+    .navbar-brand {
+        display: inline-block;
+        padding-top: 0.3125rem;
+        padding-bottom: 0.3125rem;
+        margin-right: 1rem;
+        font-size: 1.25rem;
+        line-height: inherit;
+        white-space: nowrap;
+    }
+
+    .navbar-brand:hover,
+    .navbar-brand:focus {
+        text-decoration: none;
+    }
+
+    .navbar-nav {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        padding-left: 0;
+        margin-bottom: 0;
+        list-style: none;
+    }
+
+    .navbar-collapse {
+        -ms-flex-preferred-size: 100%;
+        flex-basis: 100%;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .navbar-toggler {
+        padding: 0.25rem 0.75rem;
+        font-size: 1.25rem;
+        line-height: 1;
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+    }
+
+    .navbar-toggler:hover,
+    .navbar-toggler:focus {
+        text-decoration: none;
+    }
+
+    @media (min-width: 992px) {
+        .navbar-expand-lg {
+            -ms-flex-flow: row nowrap;
+            flex-flow: row nowrap;
+            -ms-flex-pack: start;
+            justify-content: flex-start;
+        }
+
+        .navbar-expand-lg .navbar-nav {
+            -ms-flex-direction: row;
+            flex-direction: row;
+        }
+
+        .navbar-expand-lg .navbar-collapse {
+            display: -ms-flexbox !important;
+            display: flex !important;
+            -ms-flex-preferred-size: auto;
+            flex-basis: auto;
+        }
+
+        .navbar-expand-lg .navbar-toggler {
+            display: none;
+        }
+    }
+
+    @media (max-width: 991px) {
+        #navbarSupportedContent {
+            display: none;
+        }
+    }
+</style>
+<nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            Gridea
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+            <div class="nav-item">
+                
+                <a href="/" class="menu gt-a-link">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tag/FO9lVLSVw/" class="menu gt-a-link">
+                    DockerHub
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/archives" class="menu gt-a-link">
+                    归档
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/tags" class="menu gt-a-link">
+                    标签
+                </a>
+                
+            </div>
+            
+            <div class="nav-item">
+                
+                <a href="/post/about" class="menu gt-a-link">
+                    关于
+                </a>
+                
+            </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1618566996136"
+                action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    /* 移动端导航栏展开/收起切换 */
+    document.getElementById('changeNavbar').onclick = function () {
+        var element = document.getElementById('navbarSupportedContent');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Docker 服务搭建调试
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-04-16 ·
+                    </time>
+                    
+                        <a href="https://github.com/linzing/tag/FO9lVLSVw/" class="post-tags">
+                            # DockerHub
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h2 id="doceker">Doceker</h2>
+<p>安装docker的教程非常多，</p>
+<p>https://www.runoob.com/docker/centos-docker-install.html</p>
+<p>让docker服务自启动</p>
+<pre><code>systemctl enable docker.service
+</code></pre>
+<p>已经创建的容器未指定自启动的可以通过顺达特命令设置</p>
+<pre><code>docker update --restart=always xxx 
+
+
+docker update –restart=no xxx 
+</code></pre>
+<p>查看运行的容器</p>
+<pre><code>docker ps
+</code></pre>
+<p>查看全部容器</p>
+<pre><code>docker ps -a
+</code></pre>
+<p>查看镜像</p>
+<pre><code>docker images
+</code></pre>
+<p>查看资源监控</p>
+<pre><code>docker stats
+</code></pre>
+<p>开始</p>
+<pre><code>docker start
+</code></pre>
+<p>停止</p>
+<pre><code>docker stop 
+</code></pre>
+<p><strong>您可以通过修改daemon配置文件/etc/docker/daemon.json来使用加速器</strong></p>
+<p>阿里</p>
+<pre><code>mkdir -p /etc/docker
+ tee /etc/docker/daemon.json &lt;&lt;-'EOF'
+ {
+  &quot;registry-mirrors&quot;: [&quot;https://q052ohga.mirror.aliyuncs.com&quot;]
+ }
+ EOF
+ systemctl daemon-reload
+ systemctl restart docker
+
+</code></pre>
+<p>来自 <a href="https://cr.console.aliyun.com/cn-qingdao/instances/mirrors">https://cr.console.aliyun.com/cn-qingdao/instances/mirrors</a></p>
+<p>或者daocloud</p>
+<pre><code>{
+ &quot;registry-mirrors&quot;: [&quot;http://f1361db2.m.daocloud.io&quot;]
+}
+{
+ &quot;registry-mirrors&quot;: [
+   &quot;http://hub-mirror.c.163.com&quot;   
+   &quot;http://docker.mirrors.ustc.edu.cn&quot;,
+   &quot;http://registry.docker-cn.com&quot;,   
+  ]
+}
+
+</code></pre>
+<p>全家桶</p>
+<pre><code>{
+ &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;,&quot;http://f1361db2.m.daocloud.io&quot;,&quot;https://q052ohga.mirror.aliyuncs.com&quot;,&quot;https://3laho3y3.mirror.aliyuncs.com&quot;,&quot;https://docker.mirrors.ustc.edu.cn&quot;]
+}
+</code></pre>
+<p><strong>防火墙问题</strong></p>
+<p>centos的firewall防火墙和docker有冲突。关闭防火墙的时候docker容器有时候运行不起来</p>
+<p>最后的解决方式是把docker的网络接口设置为白名单</p>
+<p>firewall-cmd --permanent --zone=trusted --add-interface=docker0</p>
+<p>来自 <a href="https://unix.stackexchange.com/questions/199966/how-to-configure-centos-7-firewalld-to-allow-docker-containers-free-access-to-th">https://unix.stackexchange.com/questions/199966/how-to-configure-centos-7-firewalld-to-allow-docker-containers-free-access-to-th</a></p>
+<p><strong>保险起见，重启防火墙和docker服务</strong></p>
+<pre><code>firewall-cmd --reload
+systemctl restart docker
+</code></pre>
+<p><strong>有关于防火墙的文章看一下链接</strong></p>
+<p>https://www.cnblogs.com/leoxuan/p/8275343.html</p>
+<p>配置文件路径为：/var/lib/docker/containers/容器ID</p>
+<p><strong>容器命名</strong></p>
+<p>docker rename 原容器名称 新容器名称</p>
+<h5 id="docker备份与迁移">Docker备份与迁移</h5>
+<p><strong>1 容器保存为镜像</strong></p>
+<p>我们可以通过以下命令将容器保存为镜像</p>
+<p><code>docker commit nginx mynginx</code></p>
+<p>nginx是容器名称</p>
+<p>mynginx是新的镜像名称</p>
+<p>此镜像的内容就是你当前容器的内容，接下来你可以用此镜像再次运行新的容器</p>
+<p><strong>2 镜像备份</strong></p>
+<p><code>docker save -o mynginx.tar mynginx</code></p>
+<p>-o 输出到的文件</p>
+<p>执行后，运行ls命令即可看到打成的tar包</p>
+<p><strong>3镜像恢复与迁移</strong></p>
+<p>首先我们先删除掉mynginx镜像</p>
+<p>然后执行此命令进行恢复</p>
+<p><code>docker load -i mynginx.tar</code></p>
+<p>-i 输入的文件</p>
+<p>执行后再次查看镜像，可以看到镜像已经恢复</p>
+<p>安装linux容器</p>
+<p><code>docker run -it -p 2221:22 -p 8880:80 镜像名 /bin/bash</code></p>
+<p>来自 <a href="https://www.cnblogs.com/luyanjie/p/9656863.html">https://www.cnblogs.com/luyanjie/p/9656863.html</a></p>
+<p><code>docker run -itd --privileged --name myCentos -p 2222:22 589dc4d40385 /usr/sbin/init</code></p>
+<p><strong>Centos8 安装Docker的方法不一样，按照以下文章按照</strong></p>
+<p>https://phoenixnap.com/kb/how-to-install-docker-on-centos-8</p>
+<p>使用DNF添加并启用官方Docker CE存储库。在终端窗口中键入以下命令：</p>
+<pre><code>sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+</code></pre>
+<p>系统通知您已经成功检索了存储库。</p>
+<p>终端确认Docker已添加到CentOS 8。</p>
+<p><code>sudo dnf repolist -v</code></p>
+<p>屏幕信息提供所有相关的详细信息。<br>
+验证是否添加了正确的存储库<br>
+要列出所有可用的docker-ce软件包，请输入：</p>
+<p><code>dnf list docker-ce --showduplicates | sort -r</code></p>
+<p>不幸的是，CentOS 8不支持container.id软件包的特定版本。这意味着仅某些版本的docker-ce可用于安装。<br>
+可在系统上安装的docker-ce版本列表<br>
+有两种方法可以解决此问题并在CentOS 8上安装Docker。<br>
+在CentOS 8上安装Docker CE<br>
+选项1：跳过具有损坏损坏的程序包<br>
+一个有效的解决方案是使您的CentOS 8系统使用以下--nobest命令安装最符合条件的版本：</p>
+<p><code>sudo dnf install docker-ce --nobest</code></p>
+<p>安装将跳过最新的候选版本，并使用所需的containerd.io软件包安装最合适的版本。<br>
+使用nobest命令安装docker ce<br>
+输入y确认后，系统将继续安装Docker CE 18.06.3.ce-3.el7。<br>
+安装跳过了最新版本<br>
+如果仔细观察，您会看到安装跳过了不符合条件的最新版本的docker-ce。<br>
+选项2：手动安装containerd.io<br>
+在CenOS 8上安装Docker的另一个选择是预先手动安装containerd.io软件包。该解决方法可让您安装最新的docker-ce版本。<br>
+使用以下命令：</p>
+<pre><code>sudo dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
+</code></pre>
+<p>使用y确认安装。您已经成功安装了最新版本的containerd.io。</p>
+<p>成功安装了最新版本的containerd.io</p>
+<p>现在，我们可以使用一个简单的命令来安装最新版本的docker-ce：</p>
+<p><code>sudo dnf install docker-ce -y</code></p>
+<p>以下输出确认docker-ce-3：19.03.5-3.el7.x86_64已成功安装。<br>
+安装了最新版本的Docker CE<br>
+启动并测试Docker<br>
+启用Docker<br>
+通过以下方式启用并启动Docker服务：</p>
+<p><code>sudo systemctl enable --now docker</code></p>
+<p>输出确认我们已经创建了符号链接。<br>
+在CentOS 8上启用Docker<br>
+接下来，使用以下简短命令确认Docker是否处于活动状态并正在运行：</p>
+<p><code>systemctl status docker</code></p>
+<p>我们看到了时间戳，并确认Docker是活动的。<br>
+Docker在CentOS上处于活动状态并正在运行确认</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+
+        
+            <span id="/linzing/post/" class="leancloud_visitors" data-flag-title="Docker 服务搭建调试">
+                <em class="post-meta-item-text">阅读量 </em>
+                <i class="leancloud-visitors-count">0</i>
+            </span>
+        
+
+        
+
+        
+            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
+
+<style>
+	div#vcomments{
+		width:100%;
+		max-width: 1000px;
+		padding: 2.5%
+	}
+</style>
+
+
+	<div id="vcomments"></div>
+
+<script>
+	new Valine({
+		el: '#vcomments',
+		appId: '',
+		appKey: '',
+		avatar: 'robohash',
+		pageSize: 5,
+		recordIp: true,
+		placeholder: 'Just Go Go',
+		visitor: true,
+	});
+</script>
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">温故而知新</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://github.com/linzing/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://github.com/linzing</id>
+    <title>Gridea</title>
+    <updated>2021-04-16T09:56:37.162Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://github.com/linzing"/>
+    <link rel="self" href="https://github.com/linzing/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://github.com/linzing/images/avatar.png</logo>
+    <icon>https://github.com/linzing/favicon.ico</icon>
+    <rights>All rights reserved 2021, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[Zerotier 局域网穿透神器]]></title>
+        <id>https://github.com/linzing/post/zerotier-ju-yu-wang-chuan-tou-shen-qi/</id>
+        <link href="https://github.com/linzing/post/zerotier-ju-yu-wang-chuan-tou-shen-qi/">
+        </link>
+        <updated>2021-04-16T08:52:29.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>ARM架构搭建</strong><br>
+搭建命令，注意$HOME位置</p>
+<pre><code>docker run --name zerotier-one --device=/dev/net/tun --net=host \
+  --cap-add=NET_ADMIN --cap-add=SYS_ADMIN \
+  -v $HOME/docker/zerotier-one:/var/lib/zerotier-one ugeek/zerotier:arm
+</code></pre>
+<p>进入容器</p>
+<p><code>docker exec -it zerotier-one bash</code></p>
+<p>加入网络</p>
+<p><code>zerotier-cli join Network_ID</code></p>
+<p>离开网络</p>
+<p><code>zerotier-cli leave Network_ID、</code></p>
+<p><strong>X64架构搭建</strong><br>
+搭建命令，注意$HOME位置</p>
+<pre><code>docker run \
+  -d \
+  --restart unless-stopped \
+  --name zerotier-one \
+  --device /dev/net/tun \
+  --net host \
+  --cap-add NET_ADMIN \
+  --cap-add SYS_ADMIN \
+  -v /disk/docker/zerotier-one:/var/lib/zerotier-one \
+  henrist/zerotier-one
+</code></pre>
+<p>加入网络</p>
+<p><code>docker exec zerotier-one zerotier-cli join 88503383901559a0</code></p>
+<p>显示服务状态：</p>
+<p><code>docker exec zerotier-one zerotier-cli status</code></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Xware 迅雷 ]]></title>
+        <id>https://github.com/linzing/post/xware-xun-lei/</id>
+        <link href="https://github.com/linzing/post/xware-xun-lei/">
+        </link>
+        <updated>2021-04-16T08:51:43.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>docker run -d --privileged=true \
+        --name=xware \
+        --net=host \
+        -v /disk/Samba/Watch:/app/TDDOWNLOAD \
+        yinheli/docker-thunder-xware
+</code></pre>
+<p>查看docker绑定码</p>
+<p><code>docker logs xware</code></p>
+<p>访问http://yuancheng.xunlei.com/ 这个网站 登录后用docker里的绑定码bftamp 在这个网站上绑定下载器。</p>
+<p>（视乎已失效）</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[v2Ray 客户端搭建]]></title>
+        <id>https://github.com/linzing/post/v2ray-ke-hu-duan-da-jian/</id>
+        <link href="https://github.com/linzing/post/v2ray-ke-hu-duan-da-jian/">
+        </link>
+        <updated>2021-04-16T08:50:27.000Z</updated>
+        <content type="html"><![CDATA[<p>拉取镜像</p>
+<p><code>docker pull teddysun/v2ray</code></p>
+<p>创建容器</p>
+<p><code>docker run -d -p 1080:1080 --name v2ray --restart=always -v /disk/v2ray:/etc/v2ray teddysun/v2ray</code></p>
+<p>在/disk/docker/v2ray文件路径里面必须添加一个config.json的配置文件，不然会打不开v2ray</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Transmission BT下载服务器]]></title>
+        <id>https://github.com/linzing/post/transmission-bt-xia-zai-fu-wu-qi/</id>
+        <link href="https://github.com/linzing/post/transmission-bt-xia-zai-fu-wu-qi/">
+        </link>
+        <updated>2021-04-16T08:49:57.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>ARM和X86通用</strong></p>
+<pre><code>docker create \
+  --name=transmission \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=Asia/Shanghai \
+  -e TRANSMISSION_WEB_HOME=/transmission-web-control\
+  -e USER=linzing \
+  -e PASS=545200 \
+  -p 9091:9091 \
+  -p 51413:51413 \
+  -p 51413:51413/udp \
+  -v /disk/docker/transmission:/config \
+  -v /disk/docker/transmission/download:/downloads \
+  -v /disk/docker/transmission/download/watch:/watch \
+  --restart unless-stopped \
+  linuxserver/transmission
+</code></pre>
+<p>项目地址<br>
+https://hub.docker.com/r/linuxserver/transmission/</p>
+<p>系统默认配置</p>
+<pre><code>docker create \
+  --name=transmission \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=Europe/London \
+  -e TRANSMISSION_WEB_HOME=/transmission-web-control\
+  -e USER=linzing \
+  -e PASS=545200 \
+  -p 9091:9091 \
+  -p 51413:51413 \
+  -p 51413:51413/udp \
+  -v /disk/docker/transmission:/config \
+  -v /disk/Samba/Transmission:/downloads \
+  -v /disk/Samba/Transmission/watch:/watch \
+  --restart unless-stopped \
+  linuxserver/transmission
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ Traccar 开源GPS定位系统]]></title>
+        <id>https://github.com/linzing/post/traccar-kai-yuan-gps-ding-wei-xi-tong/</id>
+        <link href="https://github.com/linzing/post/traccar-kai-yuan-gps-ding-wei-xi-tong/">
+        </link>
+        <updated>2021-04-16T07:58:19.000Z</updated>
+        <content type="html"><![CDATA[<p>创建工作目录：</p>
+<p><code>mkdir -p /disk/docker/traccar/logs</code></p>
+<p>获取默认的traccar.xml：</p>
+<pre><code>docker run \
+ --rm \
+ --entrypoint cat \
+ traccar/traccar:latest \
+ /opt/traccar/conf/traccar.xml &gt; /disk/docker/traccar/traccar.xml
+</code></pre>
+<p>编辑traccar.xml： https//www.traccar.org/configuration-file/</p>
+<p>创建容器：</p>
+<pre><code>docker run \
+-d --restart always \
+--name traccar \
+--hostname traccar \
+-p 8082:8082 \
+-p 5000-5150:5000-5150 \
+-p 5000-5150:5000-5150/udp \
+-v /disk/docker/traccar/logs:/opt/traccar/logs:rw \
+-v /disk/docker/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro \
+traccar/traccar:latest
+</code></pre>
+<p>带时区设置</p>
+<pre><code>docker run \
+-d --restart always \
+--name traccar \
+--hostname traccar  \
+-e TZ=Asia/Shanghai -p 8082:8082 \
+-p 5000-5150:5000-5150 \
+-p 5000-5150:5000-5150/udp \
+-v /disk/docker/traccar/logs:/opt/traccar/logs:rw \
+-v /disk/docker/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro \
+traccar/traccar:latest
+</code></pre>
+<p>MySQL的配置参数（用适当的值替换[HOST]，[DATABASE]，[USER]，[PASSWORD]；对于本地数据库，请使用“ localhost”作为HOST）：</p>
+<pre><code>&lt;entry key='database.driver'&gt;com.mysql.cj.jdbc.Driver&lt;/entry&gt;
+&lt;entry key='database.url'&gt;jdbc:mysql://10.10.10.243:3306/traccar?serverTimezone=UTC&amp;amp;useSSL=false&amp;amp;allowMultiQueries=true&amp;amp;autoReconnect=true&amp;amp;useUnicode=yes&amp;amp;characterEncoding=UTF-8&amp;amp;sessionVariables=sql_mode=''&lt;/entry&gt;
+&lt;entry key='database.user'&gt;root&lt;/entry&gt;
+&lt;entry key='database.password'&gt;851555386&lt;/entry&gt;
+</code></pre>
+<p>时区问题方法2<br>
+在traccar.xml加上：</p>
+<pre><code>&lt;entry key='time.override'&gt;deviceTime&lt;/entry&gt;
+&lt;entry key='time.protocols'&gt;osmand,gt06&lt;/entry&gt;
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SAMB 局域网共享服务器]]></title>
+        <id>https://github.com/linzing/post/samb-ju-yu-wang-gong-xiang-fu-wu-qi/</id>
+        <link href="https://github.com/linzing/post/samb-ju-yu-wang-gong-xiang-fu-wu-qi/">
+        </link>
+        <updated>2021-04-16T07:57:42.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>ARM和X86通用</strong></p>
+<p>一个盘</p>
+<pre><code>docker run -it --name samba -p 139:139 -p 445:445 -v /disk/docker/samba:/mount -d dperson/samba -u &quot;linzing;851555386&quot;  -s &quot;samba;/mount/;yes;no;no;all;none&quot; 
+</code></pre>
+<p>两个盘</p>
+<pre><code>docker run -it --name samba -p 139:139 -p 445:445 -v /disk/docker/samba:/mount -v /disk/docker/samba1/samba:/mount1 -d dperson/samba -u &quot;linzing;851555386&quot;  -s &quot;samba;/mount/;yes;no;no;all;none&quot; -s &quot;samba1;/mount1/;yes;no;no;all;none&quot;
+</code></pre>
+<p>系统默认配置版本</p>
+<pre><code>docker run -it --name samba -p 139:139 -p 445:445 -v /disk/Samba:/mount -d dperson/samba -u &quot;linzing;851555386&quot;  -s &quot;Samba;/mount/;yes;no;no;all;none&quot; 
+</code></pre>
+<p>//旧版<br>
+添加两个盘</p>
+<pre><code>docker stop samba
+docker rm samba
+docker run -it --name samba -p 139:139 -p 445:445 -v /3tdisk:/mount -v /disk/docker/samba:/mount1 -d dperson/samba -u &quot;linzing;851555386&quot;  -s &quot;3tdisk;/mount/;yes;no;no;all;none&quot; -s &quot;samba;/mount1/;yes;no;no;all;none&quot;
+</code></pre>
+<p>https://www.jianshu.com/p/bf65233c068d</p>
+<pre><code>docker run -it --name samba -p 139:139 -p 445:445 -v /udisk:/mount -d dperson/samba -u &quot;linzing;851555386&quot;  -s &quot;udisk;/mount/;yes;no;no;all;none&quot; 
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ Phpmyadmin]]></title>
+        <id>https://github.com/linzing/post/phpmyadmin/</id>
+        <link href="https://github.com/linzing/post/phpmyadmin/">
+        </link>
+        <updated>2021-04-16T07:57:05.000Z</updated>
+        <content type="html"><![CDATA[<p>新建文件</p>
+<p><code>vim /disk/docker/phpmyadmin/config.user.inc.php</code></p>
+<p>部署容器</p>
+<pre><code>docker run -itd --name phpmyadmin -p 8083:80 -e PMA_HOST=10.10.10.243 -e PMA_PORT=3306 -e PMA_USER=root -e PMA_PASSWORD=851555386 -v /disk/docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php phpmyadmin/phpmyadmin
+</code></pre>
+<pre><code>docker run --name myadmin -d --link mysql_db_server:db -p 8080:80 -v /some/local/directory/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php phpmyadmin/phpmyadmin
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Nextcloud 开源云盘系统]]></title>
+        <id>https://github.com/linzing/post/nextcloud-kai-yuan-yun-pan-xi-tong/</id>
+        <link href="https://github.com/linzing/post/nextcloud-kai-yuan-yun-pan-xi-tong/">
+        </link>
+        <updated>2021-04-16T07:56:37.000Z</updated>
+        <content type="html"><![CDATA[<p>项目地址https://hub.docker.com/_/nextcloud/</p>
+<p>搭建</p>
+<pre><code>docker pull nextcloud 
+docker run --name nextcloud -p 8080:80 -v /disk/docker/nextcloud:/var/www/html -d nextcloud 
+</code></pre>
+<p>更新</p>
+<pre><code>docker pull nextcloud 
+docker stop nextcloud
+docker rm nextcloud
+docker run --name nextcloud -p 8080:80 -v /disk/docker/nextcloud:/var/www/html -d nextcloud 
+</code></pre>
+<p>添加域名，在配置文件里面修改</p>
+<p><code>/config/config.php</code></p>
+<p>来自 <a href="https://www.cnblogs.com/h5av/p/10687751.html">https://www.cnblogs.com/h5av/p/10687751.html</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[MYSQL]]></title>
+        <id>https://github.com/linzing/post/mysql/</id>
+        <link href="https://github.com/linzing/post/mysql/">
+        </link>
+        <updated>2021-04-16T07:56:19.000Z</updated>
+        <content type="html"><![CDATA[<p>拉取 MySQL 镜像</p>
+<p>这里我们拉取官方的最新版本的镜像：</p>
+<p><code>docker pull mysql:latest</code></p>
+<p>运行容器</p>
+<p>安装完成后，我们可以使用以下命令来运行 mysql 容器：</p>
+<pre><code>docker run -itd --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=851555386 -v /disk/docker/myslq/datadir:/var/lib/mysql mysql
+</code></pre>
+<p>参数说明：</p>
+<p>-p 3306:3306 ：映射容器服务的 3306 端口到宿主机的 3306 端口，外部主机可以直接通过 宿主机ip:3306 访问到 MySQL 的服务。<br>
+MYSQL_ROOT_PASSWORD=123456：设置 MySQL 服务 root 用户的密码。</p>
+<p>phpmyadmin搭建</p>
+<pre><code>docker run -itd --name phpmyadmin -p 8083:80 -e PMA_HOST=10.10.10.243 -e PMA_PORT=3306 -e PMA_USER=root -e PMA_PASSWORD=851555386  phpmyadmin/phpmyadmin
+</code></pre>
+<p>默认搭建的时候ROOT是没有外部访问权限，需要进入MYSQL里面设置权限</p>
+<pre><code>docker exec -it mysql /bin/bash
+mysql -uroot -p851555386
+ALTER user 'root'@'%' IDENTIFIED WITH mysql_native_password BY '851555386';
+</code></pre>
+<p>显示：Query OK, 0 rows affected (0.09 sec) 即可</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Docker for Linux 镜像]]></title>
+        <id>https://github.com/linzing/post/docker-for-linux-jing-xiang/</id>
+        <link href="https://github.com/linzing/post/docker-for-linux-jing-xiang/">
+        </link>
+        <updated>2021-04-16T07:55:40.000Z</updated>
+        <content type="html"><![CDATA[<p>debian ：</p>
+<pre><code>docker run -tid --name awtrix -p 7000:7000 -p 7001:7001 --privileged=true debian /bin/bash
+</code></pre>
+<p>centos：</p>
+<pre><code>docker run -tid --name awtrix -p 7000:7000 -p 7001:7001 --privileged=true centos /usr/sbin/init
+</code></pre>
+<p><strong>Linux Docker systemctl 命令无法使用的解决方案</strong></p>
+<p>CentOS7</p>
+<pre><code> docker     run -tid --name test_1 --privileged=true centos:latest /usr/sbin/init
+docker exec -it test_1 /bin/bash
+</code></pre>
+<p>Ubuntu16.04</p>
+<pre><code>docker     run -tid --name test_2 --privileged=true ubuntu:16.04 /sbin/init
+docker exec -it     test_2 /bin/bash
+</code></pre>
+<p>来自 <a href="https://blog.csdn.net/THMAIL/article/details/103687508/">https://blog.csdn.net/THMAIL/article/details/103687508/</a></p>
+<p>arm 可开机启动的镜像</p>
+<pre><code>docker run -d -it --name linux -v /sys/fs/cgroup:/sys/fs/cgroup:ro --cap-add SYS_ADMIN -p 7000:7000 -p 7001:7001 alehaa/debian-systemd:stretch
+</code></pre>
+]]></content>
+    </entry>
+</feed>
